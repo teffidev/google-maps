@@ -82,7 +82,7 @@ const Map1 = () => {
           {/* Google Map Box */}
           <GoogleMap
             center={center}
-            zoom={15}
+            zoom={10}
             mapContainerStyle={{ width: "100%", height: "100%" }}
             options={{
               zoomControl: false,
@@ -91,7 +91,7 @@ const Map1 = () => {
               fullscreenControl: false,
             }}
             onLoad={(map) => {
-              console.log("Map loaded:", map);
+              // console.log("Map loaded:", map);
               setMap(map);
             }}>
             <Marker position={center} />
@@ -126,7 +126,7 @@ const Map1 = () => {
             </Box>
 
             <ButtonGroup>
-              <Button colorScheme="pink" type="submit" onClick={calculateRoute}>
+              <Button colorScheme="blue" type="submit" onClick={calculateRoute}>
                 Go
               </Button>
               <IconButton
