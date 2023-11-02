@@ -104,7 +104,10 @@ const Map1 = () => {
           p={2}
           m={2}
           borderRadius="lg"
-          position="absolute" left={"35%"} top={"10%"} h="25%" w="30%"
+          position="absolute"
+          left={"35%"}
+          top={"10%"}
+          h="24%"
           bgColor="white"
           shadow="base"
           minW="container.md"
@@ -136,7 +139,7 @@ const Map1 = () => {
               />
             </ButtonGroup>
           </HStack>
-          <HStack spacing={4} mt={4} justifyContent="space-between">
+          <HStack spacing={4} ml={2} mt={2} justifyContent="space-between">
             <Text>Distance: {distance} </Text>
             <Text>Duration: {duration} </Text>
             <IconButton
@@ -145,7 +148,7 @@ const Map1 = () => {
               isRound
               onClick={() => {
                 map.panTo(center);
-                map.setZoom(15);
+                map.setZoom(10);
               }}
             />
           </HStack>

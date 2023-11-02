@@ -1,3 +1,4 @@
+import React, { useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -7,7 +8,6 @@ import {
   IconButton,
   Input,
   SkeletonText,
-  Text,
 } from "@chakra-ui/react";
 import { FaLocationArrow, FaTimes } from "react-icons/fa";
 
@@ -16,9 +16,7 @@ import {
   GoogleMap,
   Marker,
   Autocomplete,
-  DirectionsRenderer,
 } from "@react-google-maps/api";
-import { useRef, useState } from "react";
 
 const center = { lat: 6.25184, lng: -75.56359 };
 const libraries = ["places", "geometry"];
@@ -29,45 +27,71 @@ const Map2 = () => {
     libraries,
   });
 
-  const [map, setMap] = useState(/** @type google.maps.Map */ (null));
-  const [directionsResponse, setDirectionsResponse] = useState(null);
-  const [distance, setDistance] = useState("");
-  const [duration, setDuration] = useState("");
-
-  /** @type React.MutableRefObject<HTMLInputElement> */
+  const [map, setMap] = useState(null);
   const originRef = useRef();
-  /** @type React.MutableRefObject<HTMLInputElement> */
-  const destiantionRef = useRef();
 
   if (!isLoaded) {
     return <SkeletonText />;
   }
 
   async function calculateRoute() {
-    if (originRef.current.value === "" || destiantionRef.current.value === "") {
+    if (originRef.current.value === "") {
       return;
     }
-    // eslint-disable-next-line no-undef
-    const directionsService = new google.maps.DirectionsService();
-    const results = await directionsService.route({
-      origin: originRef.current.value,
-      destination: destiantionRef.current.value,
-      // eslint-disable-next-line no-undef
-      travelMode: google.maps.TravelMode.DRIVING,
-    });
-    console.log("Directions Response:", results);
-    setDirectionsResponse(results);
-    setDistance(results.routes[0].legs[0].distance.text);
-    setDuration(results.routes[0].legs[0].duration.text);
+
+    const mapElement = document.getElementById("map");
+
+    if (mapElement) {
+      const geocoder = new window.google.maps.Geocoder();
+      const address = originRef.current.value;
+
+      geocoder.geocode({ address }, (results, status) => {
+        if (status === "OK") {
+          const location = results[0].geometry.location;
+          const mapOptions = {
+            center: location,
+            zoom: 15,
+          };
+
+          const map = new window.google.maps.Map(
+            document.getElementById("map"),
+            mapOptions
+          );
+
+          if (map) {
+            map.setMap(null);
+          }
+
+          new window.google.maps.Marker({
+            position: location,
+            map,
+          });
+
+          new window.google.maps.Circle({
+            strokeColor: "#FF0000",
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: "#FF0000",
+            fillOpacity: 0.35,
+            map,
+            center: location,
+            radius: 1000, // meters
+          });
+        } else {
+          alert(
+            "La geocodificación no tuvo éxito por el siguiente motivo: " +
+              status
+          );
+        }
+      });
+    } else {
+      console.error("Elemento con ID 'map' no fue encotrado");
+    }
   }
 
   function clearRoute() {
     console.log("Clearing route");
-    setDirectionsResponse(null);
-    setDistance("");
-    setDuration("");
     originRef.current.value = "";
-    destiantionRef.current.value = "";
   }
 
   return (
@@ -82,29 +106,27 @@ const Map2 = () => {
           {/* Google Map Box */}
           <GoogleMap
             center={center}
+            mapContainerStyle={{ height: "100%", width: "100%" }}
             zoom={10}
-            mapContainerStyle={{ width: "100%", height: "100%" }}
             options={{
               zoomControl: false,
               streetViewControl: false,
               mapTypeControl: false,
               fullscreenControl: false,
             }}
-            onLoad={(map) => {
-              // console.log("Map loaded:", map);
-              setMap(map);
-            }}>
-            <Marker position={center} />
-            {directionsResponse && (
-              <DirectionsRenderer directions={directionsResponse} />
-            )}
+            onLoad={(map) => setMap(map)}>
+            <Marker position={center}></Marker>
           </GoogleMap>
         </Box>
+
         <Box
           p={2}
           m={2}
           borderRadius="lg"
-          position="absolute" left={"35%"} top={"20%"} h="25%" w="30%"
+          position="absolute"
+          left={"35%"}
+          top={"20%"}
+          h="14%"
           bgColor="white"
           shadow="base"
           minW="container.md"
@@ -112,42 +134,33 @@ const Map2 = () => {
           <HStack spacing={2} justifyContent="space-between">
             <Box flexGrow={1}>
               <Autocomplete>
-                <Input type="text" placeholder="Origin" ref={originRef} />
-              </Autocomplete>
-            </Box>
-            <Box flexGrow={1}>
-              <Autocomplete>
-                <Input
-                  type="text"
-                  placeholder="Destination"
-                  ref={destiantionRef}
-                />
+                <Input type="text" ref={originRef} />
               </Autocomplete>
             </Box>
 
-            <ButtonGroup>
-              <Button colorScheme="blue" type="submit" onClick={calculateRoute}>
-                Go
-              </Button>
-              <IconButton
-                aria-label="center back"
-                icon={<FaTimes />}
-                onClick={clearRoute}
-              />
-            </ButtonGroup>
-          </HStack>
-          <HStack spacing={4} mt={4} justifyContent="space-between">
-            <Text>Distance: {distance} </Text>
-            <Text>Duration: {duration} </Text>
-            <IconButton
-              aria-label="center back"
-              icon={<FaLocationArrow />}
-              isRound
-              onClick={() => {
-                map.panTo(center);
-                map.setZoom(15);
-              }}
-            />
+            <Box>
+              <ButtonGroup>
+                <Button
+                  colorScheme="blue"
+                  type="submit"
+                  onClick={calculateRoute}>
+                  Go
+                </Button>
+                <IconButton
+                  icon={<FaTimes />}
+                  // colorScheme="teal"
+                  onClick={clearRoute}
+                />
+                <IconButton
+                  icon={<FaLocationArrow />}
+                  isRound
+                  onClick={() => {
+                    map.panTo(center);
+                    map.setZoom(10);
+                  }}
+                />
+              </ButtonGroup>
+            </Box>
           </HStack>
         </Box>
       </Flex>
