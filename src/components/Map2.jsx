@@ -1,15 +1,32 @@
 import React, { useState } from "react";
-import { GoogleMap, LoadScript, Marker, Circle } from "@react-google-maps/api";
-import { Input, Button, Flex, Box } from "@chakra-ui/react";
+import {
+  GoogleMap,
+  LoadScript,
+  Marker,
+  Circle,
+  useJsApiLoader,
+} from "@react-google-maps/api";
+import { Input, Button, Flex, Box, Skeleton } from "@chakra-ui/react";
+
+const libraries = ["places", "geometry"];
 
 const Map2 = () => {
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+    libraries,
+  });
+
   const [map, setMap] = useState(null);
-  const [center, setCenter] = useState({ lat: 0, lng: 0 });
+  const [center, setCenter] = useState({ lat: 6.25184, lng: -75.56359 });
   const [radius, setRadius] = useState(5000); // Radio en metros
   const [searchValue, setSearchValue] = useState("");
+
+  if (isLoaded) {
+    return <Skeleton />;
+  }
+
   const handleSearch = () => {
-    // eslint-disable-next-line no-undef
-    const geocoder = new google.maps.Geocoder();
+    const geocoder = new window.google.maps.Geocoder();
     geocoder.geocode({ address: searchValue }, (results, status) => {
       if (status === "OK" && results[0].geometry.location) {
         const location = results[0].geometry.location;
@@ -19,6 +36,7 @@ const Map2 = () => {
       }
     });
   };
+
   return (
     <>
       <Flex

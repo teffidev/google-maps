@@ -29,14 +29,12 @@ const Map1 = () => {
     libraries,
   });
 
-  const [map, setMap] = useState(/** @type google.maps.Map */ (null));
+  const [map, setMap] = useState(null);
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState("");
   const [duration, setDuration] = useState("");
 
-  /** @type React.MutableRefObject<HTMLInputElement> */
   const originRef = useRef();
-  /** @type React.MutableRefObject<HTMLInputElement> */
   const destiantionRef = useRef();
 
   if (!isLoaded) {
@@ -47,13 +45,12 @@ const Map1 = () => {
     if (originRef.current.value === "" || destiantionRef.current.value === "") {
       return;
     }
-    // eslint-disable-next-line no-undef
-    const directionsService = new google.maps.DirectionsService();
+
+    const directionsService = new window.google.maps.DirectionsService();
     const results = await directionsService.route({
       origin: originRef.current.value,
       destination: destiantionRef.current.value,
-      // eslint-disable-next-line no-undef
-      travelMode: google.maps.TravelMode.DRIVING,
+      travelMode: window.google.maps.TravelMode.DRIVING,
     });
     console.log("Directions Response:", results);
     setDirectionsResponse(results);
@@ -77,40 +74,13 @@ const Map1 = () => {
         flexDirection="column"
         alignItems="center"
         h="45vh"
-        w="80vw">
-        <Box position="absolute" left={"20%"} top={"10%"} h="100%" w="80%">
-          {/* Google Map Box */}
-          <GoogleMap
-            center={center}
-            zoom={10}
-            mapContainerStyle={{ width: "100%", height: "100%" }}
-            options={{
-              zoomControl: false,
-              streetViewControl: false,
-              mapTypeControl: false,
-              fullscreenControl: false,
-            }}
-            onLoad={(map) => {
-              // console.log("Map loaded:", map);
-              setMap(map);
-            }}>
-            <Marker position={center} />
-            {directionsResponse && (
-              <DirectionsRenderer directions={directionsResponse} />
-            )}
-          </GoogleMap>
-        </Box>
+        w="45vw">
         <Box
           p={2}
           m={2}
           borderRadius="lg"
-          position="absolute"
-          left={"35%"}
-          top={"10%"}
-          h="24%"
           bgColor="white"
           shadow="base"
-          minW="container.md"
           zIndex="1">
           <HStack spacing={2} justifyContent="space-between">
             <Box flexGrow={1}>
@@ -152,6 +122,26 @@ const Map1 = () => {
               }}
             />
           </HStack>
+        </Box>
+        <Box position="absolute" h="45vh" w="100%">
+          <GoogleMap
+            center={center}
+            zoom={10}
+            mapContainerStyle={{ width: "98vw", height: "100%" }}
+            options={{
+              zoomControl: false,
+              streetViewControl: false,
+              mapTypeControl: false,
+              fullscreenControl: false,
+            }}
+            onLoad={(map) => {
+              setMap(map);
+            }}>
+            <Marker position={center} />
+            {directionsResponse && (
+              <DirectionsRenderer directions={directionsResponse} />
+            )}
+          </GoogleMap>
         </Box>
       </Flex>
     </>
