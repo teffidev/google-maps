@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import {
   GoogleMap,
   Marker,
@@ -22,8 +22,7 @@ const Map2 = () => {
 
   const [searchValue, setSearchValue] = useState("");
 
-  const radius = 5000;
-  const originRef = useRef();
+  const radius = 500;
 
   const handleSearch = () => {
     const geocoder = new window.google.maps.Geocoder();
@@ -38,7 +37,7 @@ const Map2 = () => {
   };
 
   const clearRoute = () => {
-    originRef.current.value = "";
+    setSearchValue("");
   };
 
   return (
@@ -48,7 +47,7 @@ const Map2 = () => {
         flexDirection="column"
         alignItems="center"
         h="45vh"
-        w="80vw">
+        w="100%">
         <Box
           p={2}
           m={2}
@@ -60,38 +59,58 @@ const Map2 = () => {
             <Box>
               <Autocomplete>
                 <Input
-                  placeholder="Buscar lugar de origen"
+                  id="search-value"
+                  placeholder="Find location"
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                 />
               </Autocomplete>
             </Box>
             <ButtonGroup>
-              <Button onClick={handleSearch}>Buscar</Button>
+              <Button colorScheme="cyan" type="submit" onClick={handleSearch}>
+                Go
+              </Button>
               <IconButton
                 aria-label="center back"
                 icon={<FaTimes />}
                 onClick={clearRoute}
               />
+              <IconButton
+                aria-label="center back"
+                icon={<FaLocationArrow />}
+                isRound
+                onClick={() => {
+                  setCenter({ lat: 6.25184, lng: -75.56359 });
+                  map.setZoom(10);
+                }}
+              />
             </ButtonGroup>
           </HStack>
-          <GoogleMap
-            mapContainerStyle={{ width: "100%", height: "400px" }}
-            zoom={10}
-            center={center}
-            onLoad={setMap}>
-            <Marker position={center} />
-            <Circle
-              center={center}
-              radius={radius}
-              options={{
-                fillColor: "red",
-                fillOpacity: 0.2,
-                strokeColor: "red",
-                strokeOpacity: 1,
-              }}
-            />
-          </GoogleMap>
+          <HStack>
+              <GoogleMap
+                mapContainerStyle={{ width: "100%", height: "400px" }}
+                zoom={10}
+                center={center}
+                options={{
+                  zoomControl: false,
+                  streetViewControl: false,
+                  mapTypeControl: false,
+                  fullscreenControl: false,
+                }}
+                onLoad={setMap}>
+                <Marker position={center} />
+                <Circle
+                  center={center}
+                  radius={radius}
+                  options={{
+                    fillColor: "red",
+                    fillOpacity: 0.2,
+                    strokeColor: "red",
+                    strokeOpacity: 1,
+                  }}
+                />
+              </GoogleMap>
+          </HStack>
         </Box>
       </Flex>
     </>

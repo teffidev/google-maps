@@ -21,7 +21,6 @@ import { useRef, useState } from "react";
 const center = { lat: 4.60971, lng: -74.08175 };
 
 const Map1 = () => {
-
   const [map, setMap] = useState(null);
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState("");
@@ -63,74 +62,84 @@ const Map1 = () => {
         flexDirection="column"
         alignItems="center"
         h="45vh"
-        w="45vw">
-        <Box
-          p={2}
-          m={2}
-          borderRadius="lg"
-          bgColor="white"
-          shadow="base"
-          zIndex="1">
-          <HStack spacing={2} justifyContent="space-between">
-            <Box flexGrow={1}>
-              <Autocomplete>
-                <Input type="text" placeholder="Origin" ref={originRef} />
-              </Autocomplete>
-            </Box>
-            <Box flexGrow={1}>
-              <Autocomplete>
-                <Input
-                  type="text"
-                  placeholder="Destination"
-                  ref={destiantionRef}
-                />
-              </Autocomplete>
-            </Box>
-
-            <ButtonGroup>
-              <Button colorScheme="blue" type="submit" onClick={calculateRoute}>
-                Go
-              </Button>
-              <IconButton
-                aria-label="center back"
-                icon={<FaTimes />}
-                onClick={clearRoute}
-              />
-            </ButtonGroup>
+        w="40vw">
+        <Box p={2}
+              m={2}
+              borderRadius="lg"
+              bgColor="white"
+              shadow="base"
+              zIndex="1">
+          <HStack>
+            
+              <HStack>
+                <Box>
+                  <Autocomplete>
+                    <Input
+                      id="origin-ref"
+                      type="text"
+                      placeholder="Moving From"
+                      ref={originRef}
+                    />
+                  </Autocomplete>
+                </Box>
+                <Box flexGrow={1}>
+                  <Autocomplete>
+                    <Input
+                      id="destination-ref"
+                      type="text"
+                      placeholder="Moving To"
+                      ref={destiantionRef}
+                    />
+                  </Autocomplete>
+                </Box>
+                <ButtonGroup>
+                  <Button
+                    colorScheme="cyan"
+                    type="submit"
+                    onClick={calculateRoute}>
+                    Go
+                  </Button>
+                  <IconButton
+                    aria-label="center back"
+                    icon={<FaTimes />}
+                    onClick={clearRoute}
+                  />
+                  <IconButton
+                    aria-label="center back"
+                    icon={<FaLocationArrow />}
+                    isRound
+                    onClick={() => {
+                      map.panTo(center);
+                      map.setZoom(10);
+                    }}
+                  />
+                </ButtonGroup>
+              </HStack>
+              <HStack spacing={16} ml={2} mr={16} justifyContent="space-between">
+                <Text>Distance: {distance} </Text>
+                <Text>Duration: {duration} </Text>
+              </HStack>
           </HStack>
-          <HStack spacing={4} ml={2} mt={2} justifyContent="space-between">
-            <Text>Distance: {distance} </Text>
-            <Text>Duration: {duration} </Text>
-            <IconButton
-              aria-label="center back"
-              icon={<FaLocationArrow />}
-              isRound
-              onClick={() => {
-                map.panTo(center);
-                map.setZoom(10);
+          <HStack>
+            <GoogleMap
+              mapContainerStyle={{ width: "100%", height: "400px" }}
+              center={center}
+              zoom={10}
+              options={{
+                zoomControl: false,
+                streetViewControl: false,
+                mapTypeControl: false,
+                fullscreenControl: false,
               }}
-            />
+              onLoad={(map) => {
+                setMap(map);
+              }}>
+              <Marker position={center} />
+              {directionsResponse && (
+                <DirectionsRenderer directions={directionsResponse} />
+              )}
+            </GoogleMap>
           </HStack>
-        </Box>
-        <Box position="absolute" h="45vh" w="100%">
-          <GoogleMap
-            mapContainerStyle={{ width: "98vw", height: "100%" }}
-            center={center}
-            zoom={10}
-            options={{
-              zoomControl: false,
-              streetViewControl: false,
-              mapTypeControl: false,
-              fullscreenControl: false,
-            }}
-            onLoad={(map) => {
-              setMap(map);
-            }}>
-            <Marker position={center} />
-            {directionsResponse && (
-              <DirectionsRenderer directions={directionsResponse} />
-            )}
-          </GoogleMap>
         </Box>
       </Flex>
     </>
