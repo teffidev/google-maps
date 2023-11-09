@@ -6,13 +6,11 @@ import {
   HStack,
   IconButton,
   Input,
-  SkeletonText,
   Text,
 } from "@chakra-ui/react";
 import { FaLocationArrow, FaTimes } from "react-icons/fa";
 
 import {
-  useJsApiLoader,
   GoogleMap,
   Marker,
   Autocomplete,
@@ -21,13 +19,8 @@ import {
 import { useRef, useState } from "react";
 
 const center = { lat: 4.60971, lng: -74.08175 };
-const libraries = ["places", "geometry"];
 
 const Map1 = () => {
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    libraries,
-  });
 
   const [map, setMap] = useState(null);
   const [directionsResponse, setDirectionsResponse] = useState(null);
@@ -36,10 +29,6 @@ const Map1 = () => {
 
   const originRef = useRef();
   const destiantionRef = useRef();
-
-  if (!isLoaded) {
-    return <SkeletonText />;
-  }
 
   async function calculateRoute() {
     if (originRef.current.value === "" || destiantionRef.current.value === "") {
@@ -125,9 +114,9 @@ const Map1 = () => {
         </Box>
         <Box position="absolute" h="45vh" w="100%">
           <GoogleMap
+            mapContainerStyle={{ width: "98vw", height: "100%" }}
             center={center}
             zoom={10}
-            mapContainerStyle={{ width: "98vw", height: "100%" }}
             options={{
               zoomControl: false,
               streetViewControl: false,
