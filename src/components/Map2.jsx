@@ -42,12 +42,7 @@ const Map2 = () => {
 
   return (
     <>
-      <Flex
-        position="relative"
-        flexDirection="column"
-        alignItems="center"
-        h="45vh"
-        w="40vw">
+      <Flex position="relative" alignItems="center" h="62vh" w="80vw">
         <Box
           p={2}
           m={2}
@@ -67,49 +62,51 @@ const Map2 = () => {
               </Autocomplete>
             </Box>
             <ButtonGroup>
-              <Button colorScheme="cyan" type="submit" onClick={handleSearch}>
-                Go
-              </Button>
-              <IconButton
-                aria-label="center back"
-                icon={<FaTimes />}
-                onClick={clearRoute}
-              />
-              <IconButton
-                aria-label="center back"
-                icon={<FaLocationArrow />}
-                isRound
-                onClick={() => {
-                  setCenter({ lat: 6.25184, lng: -75.56359 });
-                  map.setZoom(10);
-                }}
-              />
+              <Box p={2} m={2}>
+                <Button colorScheme="cyan" type="submit" onClick={handleSearch}>
+                  Go
+                </Button>
+                <IconButton
+                  aria-label="center back"
+                  icon={<FaTimes />}
+                  onClick={clearRoute}
+                />
+                <IconButton
+                  aria-label="center back"
+                  icon={<FaLocationArrow />}
+                  isRound
+                  onClick={() => {
+                    setCenter({ lat: 6.25184, lng: -75.56359 });
+                    map.setZoom(10);
+                  }}
+                />
+              </Box>
             </ButtonGroup>
           </HStack>
           <HStack>
-              <GoogleMap
-                mapContainerStyle={{ width: "100%", height: "400px" }}
-                zoom={10}
+            <GoogleMap
+              mapContainerStyle={{ width: "800px", height: "400px" }}
+              zoom={10}
+              center={center}
+              options={{
+                zoomControl: false,
+                streetViewControl: false,
+                mapTypeControl: false,
+                fullscreenControl: false,
+              }}
+              onLoad={setMap}>
+              <Marker position={center} />
+              <Circle
                 center={center}
+                radius={radius}
                 options={{
-                  zoomControl: false,
-                  streetViewControl: false,
-                  mapTypeControl: false,
-                  fullscreenControl: false,
+                  fillColor: "red",
+                  fillOpacity: 0.2,
+                  strokeColor: "red",
+                  strokeOpacity: 1,
                 }}
-                onLoad={setMap}>
-                <Marker position={center} />
-                <Circle
-                  center={center}
-                  radius={radius}
-                  options={{
-                    fillColor: "red",
-                    fillOpacity: 0.2,
-                    strokeColor: "red",
-                    strokeOpacity: 1,
-                  }}
-                />
-              </GoogleMap>
+              />
+            </GoogleMap>
           </HStack>
         </Box>
       </Flex>

@@ -57,42 +57,38 @@ const Map1 = () => {
 
   return (
     <>
-      <Flex
-        position="relative"
-        flexDirection="column"
-        alignItems="center"
-        h="45vh"
-        w="40vw">
-        <Box p={2}
-              m={2}
-              borderRadius="lg"
-              bgColor="white"
-              shadow="base"
-              zIndex="1">
+      <Flex position="relative" alignItems="center" h="50vh" w="80vw">
+        <Box
+          p={2}
+          m={2}
+          borderRadius="lg"
+          bgColor="white"
+          shadow="base"
+          zIndex="1">
           <HStack>
-            
-              <HStack>
-                <Box>
-                  <Autocomplete>
-                    <Input
-                      id="origin-ref"
-                      type="text"
-                      placeholder="Moving From"
-                      ref={originRef}
-                    />
-                  </Autocomplete>
-                </Box>
-                <Box flexGrow={1}>
-                  <Autocomplete>
-                    <Input
-                      id="destination-ref"
-                      type="text"
-                      placeholder="Moving To"
-                      ref={destiantionRef}
-                    />
-                  </Autocomplete>
-                </Box>
-                <ButtonGroup>
+            <HStack>
+              <Box>
+                <Autocomplete>
+                  <Input
+                    id="origin-ref"
+                    type="text"
+                    placeholder="Moving From"
+                    ref={originRef}
+                  />
+                </Autocomplete>
+              </Box>
+              <Box flexGrow={1}>
+                <Autocomplete>
+                  <Input
+                    id="destination-ref"
+                    type="text"
+                    placeholder="Moving To"
+                    ref={destiantionRef}
+                  />
+                </Autocomplete>
+              </Box>
+              <ButtonGroup>
+                <Box p={2} m={2}>
                   <Button
                     colorScheme="cyan"
                     type="submit"
@@ -113,12 +109,13 @@ const Map1 = () => {
                       map.setZoom(10);
                     }}
                   />
-                </ButtonGroup>
-              </HStack>
-              <HStack spacing={16} ml={2} mr={16} justifyContent="space-between">
-                <Text>Distance: {distance} </Text>
-                <Text>Duration: {duration} </Text>
-              </HStack>
+                </Box>
+              </ButtonGroup>
+            </HStack>
+            <HStack spacing={16} ml={2} mr={16} justifyContent="space-between">
+              <Text>Distance: {distance} </Text>
+              <Text>Duration: {duration} </Text>
+            </HStack>
           </HStack>
           <HStack>
             <GoogleMap
