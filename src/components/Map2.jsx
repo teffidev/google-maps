@@ -47,7 +47,7 @@ const Map2 = () => {
         flexDirection="column"
         alignItems="center"
         h="45vh"
-        w="100%">
+        w="40vw">
         <Box
           p={2}
           m={2}
